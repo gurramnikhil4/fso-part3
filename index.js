@@ -33,6 +33,12 @@ app.get('/info',(req,res)=>{
     res.send(`<p>Phonebook has info for ${persons.length} people<br/>${new Date(8.64e15).toString()}</p>`)
 })
 
+app.get('/api/persons/:id',(req,res)=>{
+    const response=persons.find(person => req.params.id ==person.id)
+    if(response)res.json(response)
+    res.status(404).end()
+})
+
 const PORT=3001
 app.listen(PORT, ()=>{
 console.log("server created")
