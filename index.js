@@ -48,10 +48,15 @@ app.delete(`/api/persons/:id`,(req,res)=>{
 })
 
 app.post('/api/persons/',(req,res)=>{
+
+    // if(!req.body.name||!req.body.number)
+
     const id=Math.floor(Math.random()*1000)
     const person={...req.body, id}
     persons=persons.concat(person)
-    res.end()
+    console.log(persons)
+    res.json(person)
+
 })
 
 const PORT=3001
