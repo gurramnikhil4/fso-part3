@@ -2,3 +2,23 @@ GET http://localhost:3001/api/persons/
 
 ###
 DELETE http://localhost:3001/api/persons/4/
+
+###
+POST http://localhost:3001/api/persons/
+content-type: application/json
+
+{
+    "name": "eminem",
+    "number": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+
+###
+POST http://localhost:3001/api/persons/
+content-type: application/json
+
+{
+    "name": "Arto Hellas",
+    "number": "Wed, 21 Oct 2015 18:27:50 GMT"
+
+}

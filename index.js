@@ -49,7 +49,17 @@ app.delete(`/api/persons/:id`,(req,res)=>{
 
 app.post('/api/persons/',(req,res)=>{
 
-    // if(!req.body.name||!req.body.number)
+    if(!req.body.name||!req.body.number){
+         return res.status(400).json({ 
+            error: 'content missing' 
+          })        
+    }
+
+    if(persons.find(person=>{return person.name.toLowerCase()==req.body.name.toLowerCase()})){
+        return res.status(400).json({ 
+           error: 'name must be unique' 
+         })        
+   }
 
     const id=Math.floor(Math.random()*1000)
     const person={...req.body, id}
