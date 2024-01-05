@@ -3,6 +3,11 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
+const morgon=require('morgan')
+const logger = morgon('tiny','immediate') 
+app.use(logger)
+
+
 let persons=[
     { 
       "id": 1,
@@ -68,6 +73,8 @@ app.post('/api/persons/',(req,res)=>{
     res.json(person)
 
 })
+
+
 
 const PORT=3001
 app.listen(PORT, ()=>{
