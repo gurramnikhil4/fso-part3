@@ -3,8 +3,22 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
-const morgon=require('morgan')
-const logger = morgon('tiny','immediate') 
+const morgan=require('morgan')
+
+morgan.token('dataSent', function (req, res) { return JSON.stringify(req.body) })
+
+// const logger = morgan(function (tokens, req, res) {
+//     return [
+//       tokens.method(req, res),
+//       tokens.url(req, res),
+//       tokens.status(req, res),
+//       tokens.res(req, res, 'content-length'), '-',
+//       tokens['response-time'](req, res), 'ms',
+//     ].join(' ')
+//   })
+
+const logger= morgan(':method :url :status :res[content-length] - :response-time ms :dataSent')
+  
 app.use(logger)
 
 
@@ -69,7 +83,6 @@ app.post('/api/persons/',(req,res)=>{
     const id=Math.floor(Math.random()*1000)
     const person={...req.body, id}
     persons=persons.concat(person)
-    console.log(persons)
     res.json(person)
 
 })
