@@ -31,3 +31,22 @@ content-type: application/json
 {
     "name": "hello"
 }
+
+
+
+
+
+###
+POST https://fso-part3-i0gf.onrender.com/api/persons/
+content-type: application/json
+
+{
+    "name": "hello",
+    "number": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+###
+DELETE https://fso-part3-i0gf.onrender.com/api/persons/1
+
+###
+GET https://fso-part3-i0gf.onrender.com/api/persons/

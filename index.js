@@ -6,6 +6,8 @@ app.use(express.json())
 const cors = require('cors')
 app.use(cors())
 
+app.use(express.static('dist'))
+
 const morgan=require('morgan')
 morgan.token('dataSent', function (req, res) { return JSON.stringify(req.body) })
 const logger= morgan(':method :url :status :res[content-length] - :response-time ms :dataSent')
@@ -51,7 +53,6 @@ app.get('/api/persons/:id',(req,res)=>{
 app.delete(`/api/persons/:id`,(req,res)=>{
     const id=req.params.id
     persons=persons.filter(person=>person.id!=id)
-    console.log(persons)
     res.status(204).end()
 })
 
