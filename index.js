@@ -3,24 +3,13 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
+const cors = require('cors')
+app.use(cors())
+
 const morgan=require('morgan')
-
 morgan.token('dataSent', function (req, res) { return JSON.stringify(req.body) })
-
-// const logger = morgan(function (tokens, req, res) {
-//     return [
-//       tokens.method(req, res),
-//       tokens.url(req, res),
-//       tokens.status(req, res),
-//       tokens.res(req, res, 'content-length'), '-',
-//       tokens['response-time'](req, res), 'ms',
-//     ].join(' ')
-//   })
-
 const logger= morgan(':method :url :status :res[content-length] - :response-time ms :dataSent')
-  
 app.use(logger)
-
 
 let persons=[
     { 
@@ -70,8 +59,9 @@ app.post('/api/persons/',(req,res)=>{
 
     if(!req.body.name||!req.body.number){
          return res.status(400).json({ 
-            error: 'content missing' 
-          })        
+          error: 'content missing' 
+        })
+      
     }
 
     if(persons.find(person=>{return person.name.toLowerCase()==req.body.name.toLowerCase()})){
