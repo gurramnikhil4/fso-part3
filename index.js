@@ -1,6 +1,6 @@
 const express = require('express')
 require('dotenv').config()
-const Note = require('./models/person')
+const Person = require('./models/person')
 
 const app = express()
 app.use(express.json())
@@ -17,21 +17,21 @@ app.use(logger)
 
 
 app.get('/api/persons/', (req,res)=>{ 
-  Note.find({}).then(response=>{
+  Person.find({}).then(response=>{
     res.json(response)
   })
 })
 
 app.get('/info',(req,res)=>{
-  Note.find({}).then(response=>{
+  Person.find({}).then(response=>{
     res.send(`<p>Phonebook has info for ${response.length} people<br/>${new Date().toString()}</p>`)
   })
     
 })
 
 app.get('/api/persons/:id',(req,res)=>{
-  Note.findById(req.params.id).then(note => {
-    res.json(note)
+  Person.findById(req.params.id).then(person => {
+    res.json(person)
   }).catch(()=>{
     res.status(404).end()
   })
@@ -49,21 +49,17 @@ app.post('/api/persons/',(req,res)=>{
     if(!req.body.name||!req.body.number){
          return res.status(400).json({ 
           error: 'content missing' 
-        })
-      
+        })      
     }
 
-    if(persons.find(person=>{return person.name.toLowerCase()==req.body.name.toLowerCase()})){
-        return res.status(400).json({ 
-           error: 'name must be unique' 
-         })        
-   }
+    const person = new Person({
+      name:req.body.name,
+      number:req.body.number,
+    })
 
-    const id=Math.floor(Math.random()*1000)
-    const person={...req.body, id}
-    persons=persons.concat(person)
-    res.json(person)
-
+    person.save().then(savedPerson => {
+      res.json(savedPerson)
+    })
 })
 
 
