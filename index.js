@@ -69,6 +69,22 @@ app.post('/api/persons/',(req,res,next)=>{
 
 })
 
+app.put('/api/persons/:id',(req,res,next)=>{
+  const personBody=req.body
+
+  const person={
+    "name":personBody.name,
+    "number":personBody.number
+  }
+//can also give req.body instead of person
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    .then(updatedPerson => {
+      res.json(updatedPerson)
+    })
+    .catch(error => next(error))
+
+})
+
 const errorHandler = (err,req,res,next)=>{
   console.log(err.message)
   if (err.name === 'CastError') {
