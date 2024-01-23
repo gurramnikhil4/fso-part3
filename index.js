@@ -16,10 +16,15 @@ const logger= morgan(':method :url :status :res[content-length] - :response-time
 app.use(logger)
 
 
-app.get('/api/persons/', (req,res)=>{ 
-  Person.find({}).then(response=>{
-    res.json(response)
-  })
+app.get('/api/persons/', (req,res,next)=>{ 
+  Person.find({}).then(person=>{
+    if(person){
+    res.json(person)
+    }
+    else {
+      res.status(404).end()
+    }
+  }).catch(error => next(error))
 })
 
 app.get('/info',(req,res)=>{
@@ -29,27 +34,23 @@ app.get('/info',(req,res)=>{
     
 })
 
-app.get('/api/persons/:id',(req,res)=>{
+app.get('/api/persons/:id',(req,res,next)=>{
   Person.findById(req.params.id).then(person => {
     res.json(person)
-  }).catch(()=>{
-    res.status(404).end()
-  })
+  }).catch(error => next(error))
 })
 
 
-app.delete(`/api/persons/:id`,(req,res)=>{
+app.delete(`/api/persons/:id`,(req,res,next)=>{
   console.log(req.params.id)
     Person.findByIdAndDelete(req.params.id)
-    .then(res=>{
+    .then(response=>{
       res.status(204).end()
     })
-    .catch(()=>{
-      res.status(404).end()
-    })
+    .catch(error => next(error))
 })
 
-app.post('/api/persons/',(req,res)=>{
+app.post('/api/persons/',(req,res,next)=>{
 
     if(!req.body.name||!req.body.number){
          return res.status(400).json({ 
@@ -64,8 +65,20 @@ app.post('/api/persons/',(req,res)=>{
 
     person.save().then(savedPerson => {
       res.json(savedPerson)
-    })
+    }).catch(error => next(error))
+
 })
+
+const errorHandler = (err,req,res,next)=>{
+  console.log(err.message)
+  if (err.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(err)
+}
+
+app.use(errorHandler)
 
 
 const PORT = process.env.PORT || 3001
