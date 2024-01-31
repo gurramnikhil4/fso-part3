@@ -15,9 +15,20 @@ mongoose.connect(url)
 const personSchema = new mongoose.Schema({
     name:{
       type:String,
-      minLength:3
+      minLength:3,
+      required:true
     },
-    number:String,
+    number:
+    {
+      type:String,
+      validate: {
+        validator: function(n) {
+          return (n.length>=8)&&((/\d{2}-\d+/.test(n))||(/\d{3}-\d+/.test(n)));
+        },
+        message: props => `${props.value} is not a valid "${props.path}" value`
+      },
+      required:true
+    }
 })
 
 personSchema.set('toJSON',{
