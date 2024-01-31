@@ -17,83 +17,82 @@ app.use(logger)
 
 
 app.get('/api/persons/', (req,res,next)=>{ 
-  Person.find({}).then(person=>{
-    if(person){
-    res.json(person)
-    }
-    else {
-      res.status(404).end()
-    }
-  }).catch(error => next(error))
+	Person.find({}).then(person=>{
+		if(person){
+			res.json(person)
+		}
+		else{
+			res.status(404).end()
+		}
+	}).catch(error => next(error))
 })
 
 app.get('/info',(req,res)=>{
-  Person.find({}).then(response=>{
-    res.send(`<p>Phonebook has info for ${response.length} people<br/>${new Date().toString()}</p>`)
-  })
+	Person.find({}).then(response=>{
+		res.send(`<p>Phonebook has info for ${response.length} people<br/>${new Date().toString()}</p>`)
+	})
     
 })
 
 app.get('/api/persons/:id',(req,res,next)=>{
-  Person.findById(req.params.id).then(person => {
-    res.json(person)
-  }).catch(error => next(error))
+	Person.findById(req.params.id).then(person => {
+		res.json(person)
+	}).catch(error => next(error))
 })
 
 
-app.delete(`/api/persons/:id`,(req,res,next)=>{
-  console.log(req.params.id)
-    Person.findByIdAndDelete(req.params.id)
-    .then(response=>{
-      res.status(204).end()
-    })
-    .catch(error => next(error))
+app.delete( `/api/persons/:id` ,(req,res,next)=>{
+	console.log(req.params.id)
+	Person.findByIdAndDelete(req.params.id)
+		.then((response)=>{
+			res.status(204).end()
+		})
+		.catch(error => next(error))
 })
 
 app.post('/api/persons/',(req,res,next)=>{
+	if(!req.body.name||!req.body.number){
+		return res.status(400).json({ 
+			error: 'content missing' 
+		})      
+	}
 
-    if(!req.body.name||!req.body.number){
-         return res.status(400).json({ 
-          error: 'content missing' 
-        })      
-    }
+	const person = new Person({
+		name:req.body.name,
+		number:req.body.number,
+	})
 
-    const person = new Person({
-      name:req.body.name,
-      number:req.body.number,
-    })
-
-    person.save().then(savedPerson => {
-      res.json(savedPerson)
-    }).catch(error => next(error))
+	person.save().then(savedPerson => {
+		res.json(savedPerson)
+	}).catch(error => next(error))
 
 })
 
 app.put('/api/persons/:id',(req,res,next)=>{
-  const personBody=req.body
+	const personBody=req.body
 
-  const person={
-    "name":personBody.name,
-    "number":personBody.number
-  }
+	const person={
+		'name':personBody.name,
+		'number':personBody.number
+	}
 //can also give req.body instead of person
-  Person.findByIdAndUpdate(req.params.id, person, { new: true,runValidators: true, context:'query' })
-    .then(updatedPerson => {
-      res.json(updatedPerson)
-    })
-    .catch(error => next(error))
+	Person.findByIdAndUpdate(req.params.id, person, { new: true,runValidators: true, context:'query' })
+		.then(updatedPerson => {
+			res.json(updatedPerson)
+		})
+		.catch(error => next(error))
 
 })
 
 const errorHandler = (err,req,res,next)=>{
-  console.log(err.message)
-  if (err.name === 'CastError') {
-    return res.status(400).send({ error: 'malformatted id' })
-  } else if (err.name === 'ValidationError') {   
-    return res.status(400).json({ error: err.message })
-   }
+	console.log(err.message)
+	if (err.name === 'CastError') {
+		return res.status(400).send({ error: 'malformatted id' })
+	} else if (err.name === 'ValidationError') {   
+		return res.status(400).json({ error: err.message })
+	}
 
-  next(err)
+	next(err)
 }
 
 app.use(errorHandler)
@@ -101,7 +100,7 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, ()=>{
-console.log("server created",PORT)
+	console.log('server created',PORT)
 }
 )
 
